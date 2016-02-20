@@ -1,0 +1,98 @@
+﻿@using newExam.Models
+@model Order
+@{
+    ViewBag.Title = "Оформление Заказа";
+    IEnumerable<Tour> tours = ViewBag.Tours;
+    int IdTour = 0;
+}
+
+<div class="row text-center">
+    @* Фильтр Cтраны *@
+    <div class="col-xs-12">
+        <div class="text-center filter">
+            <div class="text-center">Страна:</div>
+            <div class="btn-group"  id="selectTour">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" value="0" id="slctdTour">
+                    <span id="text">Не Выбрано</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" id="toursList">
+                    @{
+                        foreach (Tour item in tours)
+                        {
+                            var nameTour = $"{@item.Country} - {@item.City} - {@item.Type}";
+                            <li id="@item.Id"><a href="#">@nameTour</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(new {tour = @Model.Tour}))
+{
+    <div class="page-header">Информация о заказе</div>
+    <div class="panel-body text-center">
+        <div class="row">
+            @{
+                var tour = Model.Tour;
+                <div class="form-group infoTour">
+                    <h4 class="label label-warning heads">Страна:</h4>
+                    <p id="country" class="infoTour">@tour.Country</p>
+                    <h4 class="label label-warning heads">Город:</h4>
+                    <p id="city" class="infoTour">@tour.City</p>
+                    <h4 class="label label-warning heads">Тип Тура:</h4>
+                    <p id="type" class="infoTour">@tour.Type</p>
+                    <h4 class="label label-warning heads">Описание Тура:</h4>
+                    <p id="desc" class="infoTour">@tour.Description</p>
+                    <h4 class="label label-warning heads">Цена за человека:</h4>
+                    <p id="price" class="infoTour">@tour.Price</p>
+                    <h4 class="label label-warning heads">Количество человек:</h4><br>
+                    <p id="nPerson" class="infoTour">@Html.TextBoxFor(o => o.NPersons)</p>
+                    @*<h4 class="label label-warning heads">Дата отправления:</h4>
+                    <p id="date" class="infoTour">@Html.TextBoxFor(d => d.Date)</p>*@
+                    @*@Html.ValidationMessageFor(t=>t.Date)*@
+                    @Html.HiddenFor(x => x.TourId, new {@id = $"{@Model.TourId}_id"})
+                    @Html.HiddenFor(x => x.ApplicationUserId)
+                    @Html.HiddenFor(x => x.UserName)
+                    @Html.HiddenFor(x => x.Tour)
+                    @Html.HiddenFor(x=>x.Date);
+
+                </div>
+            }
+        </div>
+        <div class="panel-footer text-center">
+            <input type="submit" value="Купить Тур" class="btn btn-primary"/>
+            @Html.ActionLink("Отменить И Вернуться", "Index", null, new {@class = "btn btn-default"})
+        </div>
+    </div>
+}
+@*Скрипт обработки выбора тура*@
+<script language="javascript" type="text/javascript">
+    $(document).ready(function ()
+    {
+        var children = $("#toursList").children().each(
+            function (index, item)
+            {
+                $(item).click(function (e)
+                {
+                    $("#text")[0].textContent = e.currentTarget.firstChild.textContent;
+                    var btn = $("#slctdTour")[0];
+
+                    var hId = $("#" +@Model.TourId +"_id")[0].value = e.currentTarget.id;
+
+                    $.get('/Home/GetTour/' + hId, function (response)
+                    {
+                        var tour = JSON.parse(response);
+
+                        $("#country")[0].textContent = tour.Country;
+                        $("#city")[0].textContent = tour.City;
+                        $("#type")[0].textContent = tour.Type;
+                        $("#desc")[0].textContent = tour.Description;
+                        $("#price")[0].textContent = tour.Price;
+                    });
+                });
+            });
+    });
+</script>

@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Редактировать книгу";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model newExam.Models.Tour
+@{
+    if (Model.Id == 0)
+    {
+        <h2>Создание Нового Тура</h2>
+    }
+    else
+    {
+        <h2>Тур №@Model.Id</h2>
+    }
+}
+@using (Html.BeginForm("EditTour", "Admin", FormMethod.Post))
+{
+    <div class="panel-body text-center">
+        @Html.HiddenFor(m => m.Id)
+        @foreach (var property in ViewData.ModelMetadata.Properties)
+        {
+            if (property.PropertyName != "Id")
+            {
+                <div class="form-group">
+                    <label>@(property.DisplayName ?? property.PropertyName)</label>
+                    @if (property.PropertyName == "Description")
+                        {
+                        
+                        @Html.TextArea(property.PropertyName, null,
+                                new { @class = "form-control center", rows = 5 })
+                    }
+                    else
+                    {
+                        @Html.TextBox(property.PropertyName, null,
+                                new { @class = "form-control center" })
+                    }
+                    @Html.ValidationMessage(property.PropertyName)
+                </div>
+            }
+        }
+    </div>
+        <div class="panel-footer text-center">
+            <input type="submit" value="Сохранить" class="btn btn-primary" />
+            @Html.ActionLink("Отменить изменения и вернуться к списку", "Index", null, new { @class = "btn btn-default" })
+        </div>
+}

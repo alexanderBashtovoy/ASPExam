@@ -1,0 +1,109 @@
+﻿@model List<newExam.Models.Tour>
+@{
+    ViewBag.Title = "Главная";
+}
+
+@*<div class="row text-center">
+    @* Фильтр Cтраны *@
+   @* <div class="col-xs-12">
+        <div class="text-center filter">
+            <div class="text-center">Страна:</div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" value="">
+                    Не Выбрано <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @{
+                        var countries = Model.Select(c => c.Country).Distinct();
+                        foreach (var item in countries)
+                        {
+                            <li><a href="#" id="@item">@item</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        @* Фильтр Города 
+        <div class="text-center filter">
+            Город:<br/>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" value="">
+                    Не Выбрано <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @{
+                        var cities = Model.Select(c => c.City).Distinct();
+                        foreach (var item in cities)
+                        {
+                            <li><a href="#" id="@item">@item</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        @* Фильтр страны 
+        <div class="text-center filter">
+            Вид отдыха:<br/>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" value ="">
+                    Не Выбрано <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @{
+                        var types = Model.Select(c => c.Type).Distinct();
+                        foreach (var item in types)
+                        {
+                            <li><a href="#" id="@item">@item</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div>
+    @foreach (var item in Model)
+    {
+       <div class="well">
+            <h3>
+                <strong>@item.Country - @item.City - @item.Type</strong>
+                <span class="pull-right label label-primary">@item.Price.ToString("# руб")</span>
+            </h3>
+           
+           @if (User.Identity.IsAuthenticated)
+            {
+                @Html.Partial("TourPartial", item);
+            }            
+            <span class="lead">@item.Description</span>
+        </div>
+    }
+    
+</div>
+
+@section scripts{
+    @*<script type="text/javascript">
+    $(function () {
+        var sityDDL = $('#cityDDL');
+
+        sityDDL.val()
+
+
+        $('#cityDDL').click(function()
+        {
+            // получаем выбранный id
+            var id = $(this).val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetItems")/' + id,
+                success: function (data) {
+
+                    // заменяем содержимое присланным частичным представлением
+                    $('#city').replaceWith(data);
+                }
+            });
+        });
+    })
+    </script>*@
+}
